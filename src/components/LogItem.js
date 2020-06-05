@@ -1,6 +1,7 @@
 import React from 'react';
 import Button from 'react-bootstrap/Button';
 import Badge from 'react-bootstrap/Badge';
+import Moment from 'react-moment';
 
 const LogItem = ({ log }) => {
 	const setVariant = () => {
@@ -17,7 +18,9 @@ const LogItem = ({ log }) => {
 			</td>
 			<td>{log.text}</td>
 			<td>{log.user}</td>
-			<td>{log.created}</td>
+			<td>
+				<Moment format="MMMM Do YYYY, h:mm:ss a">{new Date(log.created)}</Moment>
+			</td>
 			<td>
 				<Button variant="danger">Delete</Button>
 			</td>
