@@ -1,48 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/Container';
 import Table from 'react-bootstrap/Table';
 import Alert from 'react-bootstrap/Alert';
+
+import { ipcRenderer } from 'electron';
 
 import LogItem from './LogItem';
 import AddLogItem from './AddLogItem';
 
 const App = () => {
-	const [logs, setLogs] = useState([
-		{
-			id: 1,
-			text: 'This is the log text',
-			priority: 'low',
-			user: 'Vitalik',
-			created: new Date().toString(),
-		},
-		{
-			id: 2,
-			text: 'This is the second log text',
-			priority: 'high',
-			user: 'Vitalik',
-			created: new Date().toString(),
-		},
-		{
-			id: 3,
-			text: 'This is the second log text',
-			priority: 'moderate',
-			user: 'Vitalik',
-			created: new Date().toString(),
-		},
-	]);
+	const [logs, setLogs] = useState([]);
 	const [alert, setAlert] = useState({
 		show: false,
 		message: '',
 		variant: 'success',
 	});
 
+	useEffect(() => {
+		ipcRenderer.send('logs:load');
+		ipcRenderer.on('logs:get', (e, logs) => {
+			setLogs(JSON.parse(logs));
+		});
+	}, []);
+
 	const addNewLog = (log) => {
-		setLogs([...logs, log]);
+		ipcRenderer.send('logs:add', log);
 		showAlert('New Log added!');
 	};
 
 	const deleteLog = (id) => {
-		setLogs(logs.filter((log) => log.id !== id));
+		ipcRenderer.send('logs:delete', id);
 		showAlert('Log has been deleted!');
 	};
 

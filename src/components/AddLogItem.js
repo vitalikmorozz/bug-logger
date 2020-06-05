@@ -19,7 +19,6 @@ const AddLogItem = ({ addNewLog, showAlert }) => {
 			text,
 			user,
 			priority,
-			created: new Date().toString(),
 		});
 
 		setText('');

@@ -1,10 +1,14 @@
 const path = require('path');
 const url = require('url');
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
+require('dotenv').config();
 
 let mainWindow;
 
 let isDev = false;
+
+const connectDB = require('./config/db')();
+const Log = require('./model/Log');
 
 if (process.env.NODE_ENV !== undefined && process.env.NODE_ENV === 'development') {
 	isDev = true;
@@ -55,6 +59,34 @@ function createMainWindow() {
 	});
 
 	mainWindow.on('closed', () => (mainWindow = null));
+}
+
+ipcMain.on('logs:load', sendLogs);
+ipcMain.on('logs:add', async (e, item) => {
+	try {
+		await Log.create(item);
+		sendLogs();
+	} catch (err) {
+		console.log(err);
+	}
+});
+
+ipcMain.on('logs:delete', async (e, id) => {
+	try {
+		await Log.deleteOne({ id });
+		sendLogs();
+	} catch (err) {
+		console.log(err);
+	}
+});
+
+async function sendLogs() {
+	try {
+		const logs = await Log.find().sort({ created: 1 });
+		mainWindow.webContents.send('logs:get', JSON.stringify(logs));
+	} catch (err) {
+		console.log(err);
+	}
 }
 
 app.on('ready', createMainWindow);
