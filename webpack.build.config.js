@@ -36,6 +36,9 @@ module.exports = {
 		}),
 		new webpack.DefinePlugin({
 			'process.env.NODE_ENV': JSON.stringify('production'),
+			'process.env.MONGO_DB_ATLAS_URI': JSON.stringify(
+				'mongodb+srv://admin:qazwsxedc@cluster0-efzjs.mongodb.net/bug-logger?retryWrites=true&w=majority'
+			),
 		}),
 		new BabiliPlugin(),
 	],

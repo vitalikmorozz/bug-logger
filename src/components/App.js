@@ -21,6 +21,10 @@ const App = () => {
 		ipcRenderer.on('logs:get', (e, logs) => {
 			setLogs(JSON.parse(logs));
 		});
+		ipcRenderer.on('logs:clear', () => {
+			setLogs([]);
+			showAlert('Logs has been cleared!');
+		});
 	}, []);
 
 	const addNewLog = (log) => {
@@ -55,8 +59,8 @@ const App = () => {
 					</tr>
 				</thead>
 				<tbody>
-					{logs.map((log) => (
-						<LogItem log={log} deleteLog={deleteLog} />
+					{logs.map((log, indx) => (
+						<LogItem key={indx} log={log} deleteLog={deleteLog} />
 					))}
 				</tbody>
 			</Table>
