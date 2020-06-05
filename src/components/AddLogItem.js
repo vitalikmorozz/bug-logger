@@ -5,14 +5,16 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 
-const AddLogItem = ({ addNewLog }) => {
+const AddLogItem = ({ addNewLog, showAlert }) => {
 	const [text, setText] = useState('');
 	const [user, setUser] = useState('');
 	const [priority, setPriority] = useState('');
 
 	const submitHandle = (e) => {
 		e.preventDefault();
-		if (priority === '') return;
+		if (text === '') return showAlert('You need to enter log text', 'danger');
+		if (user === '') return showAlert('You need to enter user', 'danger');
+		if (priority === '') return showAlert('You need to set priority', 'danger');
 		addNewLog({
 			text,
 			user,
